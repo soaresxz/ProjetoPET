@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    container_name: pet-tracker-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persiste o banco SQLite fora do container
+      - ./data:/backend/data
+      # Hot-reload: reflete mudanças no código sem rebuild
+      - ./app:/backend/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
