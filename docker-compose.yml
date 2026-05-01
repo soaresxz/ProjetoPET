@@ -1,14 +1,14 @@
 services:
   api:
     build: .
-    container_name: pet-tracker-api
+    container_name: pet-qr-tracker
     ports:
       - "8000:8000"
     volumes:
-      # Persiste o banco SQLite fora do container
-      - ./data:/backend/data
-      # Hot-reload: reflete mudanças no código sem rebuild
-      - ./app:/backend/app
+      - ./data:/backend/data       # Banco SQLite persistido
+      - ./app:/backend/app         # Hot-reload no desenvolvimento
+    env_file:
+      - .env                       # Credenciais Twilio e BASE_URL
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped

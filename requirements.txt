@@ -3,3 +3,5 @@ uvicorn[standard]==0.30.6
 paho-mqtt==2.1.0
 sqlalchemy==2.0.35
 pydantic==2.9.2
+twilio==9.3.7
+qrcode[pil]==8.0

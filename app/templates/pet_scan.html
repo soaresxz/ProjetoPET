@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pet encontrado! 🐾</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f0fdf4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
+            text-align: center;
+        }
+
+        .paw {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #14532d;
+            margin-bottom: 0.25rem;
+        }
+
+        .pet-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #16a34a;
+            margin-bottom: 1.25rem;
+        }
+
+        .info-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .info-box p {
+            margin-bottom: 0.4rem;
+            color: #166534;
+            font-size: 0.95rem;
+        }
+
+        .info-box strong {
+            color: #14532d;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #15803d;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            display: block;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+
+        .status.loading {
+            background: #fef9c3;
+            color: #713f12;
+            display: block;
+        }
+
+        .footer {
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="paw">🐾</div>
+        <h1>Pet encontrado!</h1>
+        <div class="pet-name" id="petName">Carregando...</div>
+
+        <div class="info-box">
+            <p>🏠 <strong>Dono:</strong> <span id="ownerName">—</span></p>
+            <p>ℹ️ Ao clicar no botão abaixo, o dono será notificado com sua localização.</p>
+        </div>
+
+        <button class="btn btn-primary" id="btnSend" onclick="sendLocation()">
+            📍 Avisar o dono agora
+        </button>
+
+        <div class="status" id="status"></div>
+
+        <p class="footer">Sua localização será enviada apenas ao dono do pet.</p>
+    </div>
+
+    <script>
+        const petId = "{{ pet_id }}";
+
+        // Preenche os dados do pet vindos do servidor
+        document.getElementById("petName").textContent = "{{ pet_name }}";
+        document.getElementById("ownerName").textContent = "{{ owner_name }}";
+
+        function setStatus(msg, type) {
+            const el = document.getElementById("status");
+            el.textContent = msg;
+            el.className = `status ${type}`;
+        }
+
+        async function sendLocation() {
+            const btn = document.getElementById("btnSend");
+            btn.disabled = true;
+            setStatus("Obtendo sua localização...", "loading");
+
+            if (!navigator.geolocation) {
+                setStatus("Seu navegador não suporta geolocalização.", "error");
+                btn.disabled = false;
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setStatus("Enviando localização ao dono...", "loading");
+
+                    try {
+                        const res = await fetch(`/scan/${petId}`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ lat: latitude, lng: longitude }),
+                        });
+
+                        if (res.ok) {
+                            setStatus("✅ Dono notificado com sucesso! Obrigado por ajudar 🐾", "success");
+                            btn.textContent = "✅ Notificação enviada";
+                        } else {
+                            const data = await res.json();
+                            setStatus(`Erro: ${data.detail || "Tente novamente."}`, "error");
+                            btn.disabled = false;
+                        }
+                    } catch {
+                        setStatus("Falha na conexão. Tente novamente.", "error");
+                        btn.disabled = false;
+                    }
+                },
+                (err) => {
+                    const msgs = {
+                        1: "Permissão de localização negada. Por favor, permita o acesso.",
+                        2: "Não foi possível obter sua localização.",
+                        3: "Tempo esgotado. Tente novamente.",
+                    };
+                    setStatus(msgs[err.code] || "Erro ao obter localização.", "error");
+                    btn.disabled = false;
+                },
+                { timeout: 10000, enableHighAccuracy: true }
+            );
+        }
+    </script>
+</body>
+
+</html>
