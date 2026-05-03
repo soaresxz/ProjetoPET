@@ -1,14 +1,45 @@
 services:
-  api:
+  app:
     build: .
-    container_name: pet-qr-tracker
+    container_name: backend_pet
     ports:
       - "8000:8000"
-    volumes:
-      - ./data:/backend/data       # Banco SQLite persistido
-      - ./app:/backend/app         # Hot-reload no desenvolvimento
+    volumes:     
+      - ./app:/backend/app         
     env_file:
-      - .env                       # Credenciais Twilio e BASE_URL
+      - .env      
+    depends_on:
+    - postgres                 
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_pet
+    env_file:
+      - .env
     environment:
-      - PYTHONUNBUFFERED=1
-    restart: unless-stopped
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_pet
+    env_file:
+      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL} 
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    depends_on: 
+      - postgres
+
+volumes:
+  postgres_data:
+  pgadmin_data:
