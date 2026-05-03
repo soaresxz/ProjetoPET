@@ -21,9 +21,9 @@ from sqlalchemy.orm import Session
 
 from app.database import Base, engine, get_db
 from app.models import Pet, Scan
-from app.qr_service import generate_qr_bytes
-from app.schemas import PetCreate, PetOut, ScanIn, ScanOut
-from app.sms import send_scan_sms
+from app.services.qr_service import generate_qr_bytes
+from app.schemas.schemas import PetCreate, PetOut, ScanIn, ScanOut
+from app.services.sms import send_scan_sms
 
 logging.basicConfig(
     level=logging.INFO,
