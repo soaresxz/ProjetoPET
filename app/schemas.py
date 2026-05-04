@@ -4,7 +4,6 @@ import re
 
 
 class PetCreate(BaseModel):
-    pet_id:      str
     pet_name:    str
     owner_name:  str
     owner_phone: str  # E.164: +5579999999999

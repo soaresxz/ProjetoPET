@@ -18,6 +18,9 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
+from uuid import uuid4
+
 
 from app.database import Base, engine, get_db
 from app.models import Pet, Scan
@@ -47,6 +50,13 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ou ["http://192.168.56.1:8080"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ─── Página pública: aberta por quem escaneia a coleira ──────────────────────
 @app.get("/pet/{pet_id}", response_class=HTMLResponse, tags=["público"])
@@ -110,21 +120,21 @@ def receive_scan(pet_id: str, data: ScanIn, db: Session = Depends(get_db)):
 @app.post("/admin/pets", response_model=PetOut, status_code=201, tags=["admin"])
 def create_pet(data: PetCreate, db: Session = Depends(get_db)):
     """Cadastra um novo pet no sistema."""
-    if db.query(Pet).filter(Pet.pet_id == data.pet_id).first():
-        raise HTTPException(
-            status_code=409,
-            detail=f"Pet com id '{data.pet_id}' já existe.",
-        )
+
+    # gera o ID automaticamente
+    new_id = str(uuid4())
 
     pet = Pet(
-        pet_id=data.pet_id,
+        pet_id=new_id,
         pet_name=data.pet_name,
         owner_name=data.owner_name,
         owner_phone=data.owner_phone,
     )
+
     db.add(pet)
     db.commit()
     db.refresh(pet)
+
     logger.info(f"Pet cadastrado: {pet.pet_id} — {pet.pet_name}")
     return pet
 
@@ -135,6 +145,15 @@ def list_pets(db: Session = Depends(get_db)):
     """Lista todos os pets cadastrados."""
     return db.query(Pet).order_by(Pet.created_at.desc()).all()
 
+# ─── Admin: detalhes de um pet ───────────────────────────────────────────────
+@app.get("/admin/pets/{pet_id}", response_model=PetOut, tags=["admin"])
+def get_pet(pet_id: str, db: Session = Depends(get_db)):
+    pet = db.query(Pet).filter(Pet.pet_id == pet_id).first()
+
+    if not pet:
+        raise HTTPException(status_code=404, detail="Pet não encontrado")
+
+    return pet
 
 # ─── Admin: gerar QR code PNG ─────────────────────────────────────────────────
 @app.get("/admin/pets/{pet_id}/qr", tags=["admin"])
