@@ -7,6 +7,7 @@ class Pet(Base):
     __tablename__ = "pet"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
     nome_pet: Mapped[str]
     especie: Mapped[str]
     raca: Mapped[str]
@@ -15,5 +16,5 @@ class Pet(Base):
     peso: Mapped[Optional[float]]
     tamanho: Mapped[Optional[float]]
     qr_code: Mapped[str] = mapped_column(unique=True)
-    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
+
     usuario = relationship("Usuario")
