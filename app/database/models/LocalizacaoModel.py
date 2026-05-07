@@ -11,8 +11,8 @@ class Localizacao(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     pet_id: Mapped[int] = mapped_column(ForeignKey("pet.id"))
-    latitude: Mapped[float]
-    longitude: Mapped[float]
+    latitude: Mapped[float] = mapped_column(nullable=False)
+    longitude: Mapped[float] = mapped_column(nullable=False)
     obs: Mapped[Optional[str]]
     data_hora: Mapped[datetime] = mapped_column(server_default=func.now())
 
