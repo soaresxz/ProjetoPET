@@ -9,3 +9,4 @@ class PetCreatedDto(BaseModel):
     idade: int
     peso: float
     tamanho: float
+    qr_code: str
