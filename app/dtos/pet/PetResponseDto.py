@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from app.database.enums import SexoPet
 
-class PetSchema(BaseModel):
+class PetCreatedDto(BaseModel):
+    id: int
     nome_pet: str
     especie: str
     raca: str
