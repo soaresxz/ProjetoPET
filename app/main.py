@@ -1,16 +1,3 @@
-"""
-Pet QR Tracker — Backend FastAPI
-
-Rotas:
-  GET  /pet/{pet_id}           → página pública do QR (quem achou o pet vê isso)
-  POST /scan/{pet_id}          → recebe localização de quem escaneou → envia SMS
-  POST /admin/pets             → cadastra um pet
-  GET  /admin/pets             → lista todos os pets
-  GET  /admin/pets/{pet_id}/qr → gera e baixa o QR code PNG da coleira
-  GET  /admin/pets/{pet_id}/scans → histórico de escaneamentos
-  DELETE /admin/pets/{pet_id}  → remove pet
-"""
-
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -19,6 +6,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 
+from app.controllers import ClienteController, PetController, UsuarioController
 from app.service.qr_service import generate_qr_bytes
 from app.service.sms import send_scan_sms
 
@@ -38,6 +26,11 @@ from app.service.sms import send_scan_sms
 
 
 app = FastAPI()
+
+# linkando rotas ao FastAPI
+app.include_router(ClienteController.router, prefix="/admin", tags=["admin"])
+app.include_router(PetController.router, prefix="/admin", tags=["admin"])
+app.include_router(UsuarioController.router, prefix="/usuario", tags=["usuario"])
 
 
 # # ─── Página pública: aberta por quem escaneia a coleira ──────────────────────
