@@ -1,4 +1,4 @@
-from app.service.ClienteService import listar_clientes
+from app.service.FuncionarioService import listarPets
 from fastapi import APIRouter, status
 
 router = APIRouter()
@@ -6,7 +6,7 @@ router = APIRouter()
 # acesso apenas do funcionario
 @router.get("/clientes", status_code=status.HTTP_200_OK)
 async def listar_cliente():
-    return listar_clientes()
+    return listarPets()
 
 @router.get("/clientes/{id}", status_code=status.HTTP_200_OK)
 async def obter_cliente(id: int):

@@ -7,14 +7,14 @@ from typing import Optional
 
 
 class Localizacao(Base):
-    __tablename__ = "localizacao"
+    __tablename__ = "localizacoes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    pet_id: Mapped[int] = mapped_column(ForeignKey("pet.id"))
+    pet_id: Mapped[int] = mapped_column(ForeignKey("pets.id"))
     latitude: Mapped[float] = mapped_column(nullable=False)
     longitude: Mapped[float] = mapped_column(nullable=False)
     obs: Mapped[Optional[str]]
     data_hora: Mapped[datetime] = mapped_column(server_default=func.now())
 
 
-    pet = relationship("Pet")
+    pet = relationship("Pet", back_populates="localizacoes")

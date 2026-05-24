@@ -5,7 +5,7 @@ from app.database.enums import SexoPet
 from typing import Optional
 
 class Pet(Base):
-    __tablename__ = "pet"
+    __tablename__ = "pets"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
@@ -18,4 +18,5 @@ class Pet(Base):
     tamanho: Mapped[Optional[float]]
     qr_code: Mapped[str] = mapped_column(unique=True, nullable=False)
 
-    usuario = relationship("Usuario")
+    usuario = relationship("Usuario", back_populates="pets")
+    localizacoes = relationship("Localizacao", back_populates="pet")
