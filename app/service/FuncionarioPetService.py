@@ -6,6 +6,9 @@ from app.dtos.pet import PetCreatedDto
 def listarPets(db: Session):
     return db.query(Pet).all()
 
+def listarPet(id: int, db: Session):
+    return db.query(Pet).filter(Pet.id == id).first()
+
 def cadastrarPet(pet: PetCreatedDto, db: Session):
 
     novo_pet = Pet(

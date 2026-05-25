@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.db import get_db
 from app.dtos.pet.PetCreatedDto import PetCreatedDto
 from app.dtos.pet.PetResponseDto import PetResponseDto
-from app.service.FuncionarioPetService import cadastrarPet, listarPets
+from app.service.FuncionarioPetService import cadastrarPet, listarPet, listarPets
 
 router = APIRouter()
 
@@ -13,9 +13,9 @@ router = APIRouter()
 async def listar_pets(db: Session = Depends(get_db)):
     return listarPets(db)
 
-@router.get("/pets/{id}", status_code=status.HTTP_200_OK)
-async def obter_pet(id: int):
-    return ...
+@router.get("/pets/{id}", response_model=PetResponseDto, status_code=status.HTTP_200_OK)
+async def obter_pet(id: int, db: Session = Depends(get_db)):
+    return listarPet(id, db)
 
 @router.post("/pets", response_model=PetResponseDto, status_code=status.HTTP_201_CREATED)
 async def cadastrar_pet(request: PetCreatedDto, db: Session = Depends(get_db)):

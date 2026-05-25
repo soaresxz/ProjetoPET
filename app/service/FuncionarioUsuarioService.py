@@ -6,6 +6,9 @@ from app.dtos.usuario import UsuarioCreatedDto
 def listarClientes(db: Session):
     return db.query(Usuario).all()
 
+def listarCliente(id: int, db: Session):
+    return db.query(Usuario).filter(Usuario.id == id).first()
+
 def cadastrarCliente(usuario: UsuarioCreatedDto, db: Session):
 
     novo_cliente = Usuario(
