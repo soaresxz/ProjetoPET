@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database.db import get_db
 from app.dtos.usuario.UsuarioResponseDto import UsuarioResponseDto
 from app.dtos.usuario.UsuarioCreatedDto import UsuarioCreatedDto
-from app.service.FuncionarioUsuarioService import atualizarCliente, cadastrarCliente, listarCliente, listarClientes
+from app.service.FuncionarioUsuarioService import atualizarCliente, cadastrarCliente, deletarCliente, listarCliente, listarClientes
 from fastapi import APIRouter, Depends, status
 
 router = APIRouter()
@@ -28,5 +28,5 @@ async def atualizar_cliente(id: int, request: UsuarioCreatedDto, db: Session = D
     return UsuarioResponseDto.model_validate(cliente_atualizado)
 
 @router.delete("/clientes/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def deletar_cliente(id: int):
-    return ...
+async def deletar_cliente(id: int, db: Session = Depends(get_db)):
+    return deletarCliente(id, db)

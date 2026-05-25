@@ -45,3 +45,11 @@ def atualizarPet(id: int, pet: PetCreatedDto, db: Session):
     db.refresh(pet_existente)
 
     return pet_existente
+
+def deletarPet(id: int, db: Session):
+    pet_existente = db.query(Pet).filter(Pet.id == id).first()
+    db.delete(pet_existente)
+    db.commit()
+
+    return pet_existente
+    

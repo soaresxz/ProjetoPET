@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.db import get_db
 from app.dtos.pet.PetCreatedDto import PetCreatedDto
 from app.dtos.pet.PetResponseDto import PetResponseDto
-from app.service.FuncionarioPetService import atualizarPet, cadastrarPet, listarPet, listarPets
+from app.service.FuncionarioPetService import atualizarPet, cadastrarPet, deletarPet, listarPet, listarPets
 
 router = APIRouter()
 
@@ -28,5 +28,5 @@ async def atualizar_pet(id: int, request: PetCreatedDto, db: Session = Depends(g
     return PetResponseDto.model_validate(pet)
 
 @router.delete("/pets/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def deletar_pet(id: int):
-    return ...
+async def deletar_pet(id: int, db: Session = Depends(get_db)):
+    return deletarPet(id, db)

@@ -35,3 +35,10 @@ def atualizarCliente(id: int, usuario: UsuarioCreatedDto, db: Session):
     db.refresh(cliente_existente)
 
     return cliente_existente
+
+def deletarCliente(id: int, db: Session):
+    cliente_existente = db.query(Usuario).filter(Usuario.id == id).first()
+    db.delete(cliente_existente)
+    db.commit()
+
+    return cliente_existente
