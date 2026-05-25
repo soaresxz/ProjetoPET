@@ -11,5 +11,6 @@ class PetResponseDto(BaseModel):
     idade: int
     peso: float
     tamanho: float
+    qr_code: str
 
     model_config = ConfigDict(from_attributes=True)

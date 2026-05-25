@@ -27,3 +27,21 @@ def cadastrarPet(pet: PetCreatedDto, db: Session):
     db.commit()
     db.refresh(novo_pet)
     return novo_pet
+
+def atualizarPet(id: int, pet: PetCreatedDto, db: Session):
+    pet_existente = db.query(Pet).filter(Pet.id == id).first()
+
+    pet_existente.usuario_id = pet.usuario_id
+    pet_existente.nome_pet = pet.nome_pet
+    pet_existente.especie = pet.especie
+    pet_existente.raca = pet.raca
+    pet_existente.sexo = pet.sexo
+    pet_existente.idade = pet.idade
+    pet_existente.peso = pet.peso
+    pet_existente.tamanho = pet.tamanho
+    pet_existente.qr_code = pet.qr_code
+
+    db.commit()
+    db.refresh(pet_existente)
+
+    return pet_existente

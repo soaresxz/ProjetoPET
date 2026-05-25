@@ -22,3 +22,16 @@ def cadastrarCliente(usuario: UsuarioCreatedDto, db: Session):
     db.commit()
     db.refresh(novo_cliente)
     return novo_cliente
+
+def atualizarCliente(id: int, usuario: UsuarioCreatedDto, db: Session):
+    cliente_existente = db.query(Usuario).filter(Usuario.id == id).first()
+
+    cliente_existente.nome = usuario.nome
+    cliente_existente.email = usuario.email
+    cliente_existente.senha = usuario.senha
+    cliente_existente.telefone = usuario.telefone
+
+    db.commit()
+    db.refresh(cliente_existente)
+
+    return cliente_existente
