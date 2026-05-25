@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, EmailStr
 
 class UsuarioCreatedDto(BaseModel, EmailStr):
     nome: str
@@ -6,4 +6,4 @@ class UsuarioCreatedDto(BaseModel, EmailStr):
     senha: str
     telefone: str
 
-    model_config = ConfigDict(from_attributes=True)
+    

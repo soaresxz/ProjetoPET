@@ -2,12 +2,14 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database.db import get_db
-from app.service.FuncionarioPetService import listarPets
+from app.dtos.pet.PetCreatedDto import PetCreatedDto
+from app.dtos.pet.PetResponseDto import PetResponseDto
+from app.service.FuncionarioPetService import cadastrarPet, listarPets
 
 router = APIRouter()
 
 # acesso apenas do funcionario
-@router.get("/pets", status_code=status.HTTP_200_OK)
+@router.get("/pets", response_model=list[PetResponseDto], status_code=status.HTTP_200_OK)
 async def listar_pets(db: Session = Depends(get_db)):
     return listarPets(db)
 
@@ -15,9 +17,10 @@ async def listar_pets(db: Session = Depends(get_db)):
 async def obter_pet(id: int):
     return ...
 
-@router.post("/pets", status_code=status.HTTP_201_CREATED)
-async def cadastrar_pet():
-    return ...
+@router.post("/pets", response_model=PetResponseDto, status_code=status.HTTP_201_CREATED)
+async def cadastrar_pet(request: PetCreatedDto, db: Session = Depends(get_db)):
+    pets = cadastrarPet(request, db)
+    return PetResponseDto.model_validate(pets)
 
 @router.put("/pets/{id}", status_code=status.HTTP_200_OK)
 async def atualizar_pet(id: int):

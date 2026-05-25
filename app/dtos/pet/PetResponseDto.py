@@ -1,8 +1,9 @@
-from pydantic import BaseModel
-from app.database.enums import SexoPet
+from pydantic import BaseModel, ConfigDict
+from app.database.enums.SexoPet import SexoPet
 
 class PetResponseDto(BaseModel):
     id: int
+    usuario_id: int
     nome_pet: str
     especie: str
     raca: str
@@ -10,3 +11,5 @@ class PetResponseDto(BaseModel):
     idade: int
     peso: float
     tamanho: float
+
+    model_config = ConfigDict(from_attributes=True)

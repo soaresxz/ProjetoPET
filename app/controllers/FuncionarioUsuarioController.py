@@ -20,7 +20,7 @@ async def obter_cliente(id: int):
 @router.post("/clientes", response_model=UsuarioResponseDto, status_code=status.HTTP_201_CREATED)
 async def cadastrar_cliente(request: UsuarioCreatedDto, db: Session = Depends(get_db)):
     cliente = cadastrarCliente(request, db)
-    return UsuarioCreatedDto.model_validate(cliente)
+    return UsuarioResponseDto.model_validate(cliente)
 
 @router.put("/clientes/{id}", status_code=status.HTTP_200_OK)
 async def atualizar_cliente(id: int):

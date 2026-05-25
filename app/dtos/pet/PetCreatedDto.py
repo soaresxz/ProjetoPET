@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from app.database.enums import SexoPet
+from app.database.enums.SexoPet import SexoPet
 
 class PetCreatedDto(BaseModel):
+    usuario_id: int
     nome_pet: str
     especie: str
     raca: str
@@ -10,3 +11,5 @@ class PetCreatedDto(BaseModel):
     peso: float
     tamanho: float
     qr_code: str
+
+    
