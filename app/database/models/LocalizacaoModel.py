@@ -1,8 +1,8 @@
-from sqlalchemy import ForeignKey, Mapped, mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 from datetime import datetime
-from app.database import Base
+from app.database.db import Base
 from typing import Optional
 
 

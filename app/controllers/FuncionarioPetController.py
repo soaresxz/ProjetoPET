@@ -1,11 +1,15 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
+
+from app.database.db import get_db
+from app.service.FuncionarioPetService import listarPets
 
 router = APIRouter()
 
 # acesso apenas do funcionario
 @router.get("/pets", status_code=status.HTTP_200_OK)
-async def listar_pets():
-    return ...
+async def listar_pets(db: Session = Depends(get_db)):
+    return listarPets(db)
 
 @router.get("/pets/{id}", status_code=status.HTTP_200_OK)
 async def obter_pet(id: int):
