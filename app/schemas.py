@@ -22,6 +22,7 @@ class PetOut(BaseModel):
     pet_id:     str
     pet_name:   str
     owner_name: str
+    owner_phone: str
     created_at: datetime
 
     model_config = {"from_attributes": True}
