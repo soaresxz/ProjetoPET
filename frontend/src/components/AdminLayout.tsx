@@ -26,7 +26,7 @@ export default function AdminLayout() {
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-warm text-primary-foreground shadow-glow">
               <PawPrint className="h-5 w-5" />
             </span>
-            Pet QR Tracker
+            EncontreMeuPet
           </Link>
           <nav className="flex items-center gap-1">
             {links.map((l) => (

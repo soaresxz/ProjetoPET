@@ -28,7 +28,7 @@ export default function Login() {
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-warm text-primary-foreground shadow-glow">
             <PawPrint className="h-5 w-5" />
           </span>
-          Pet QR Tracker
+          EncontreMeuPet
         </Link>
 
         <Card className="p-8 shadow-soft space-y-6">

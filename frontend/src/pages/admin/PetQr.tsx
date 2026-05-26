@@ -25,9 +25,32 @@ export default function PetQr() {
   }, [id]);
 
   const copy = async () => {
-    await navigator.clipboard.writeText(scanUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(scanUrl);
+
+      } else {
+        const textArea = document.createElement("textarea");
+
+        textArea.value = scanUrl;
+
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        document.execCommand("copy");
+
+        document.body.removeChild(textArea);
+      }
+
+      setCopied(true);
+
+      setTimeout(() => setCopied(false), 1500);
+
+    } catch (err) {
+      console.error("Erro ao copiar:", err);
+    }
   };
 
   return (

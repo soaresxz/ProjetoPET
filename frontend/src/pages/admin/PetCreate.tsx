@@ -12,16 +12,42 @@ import { ArrowLeft } from "lucide-react";
 export default function PetCreate() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+
+  const formatPhone = (value: string) => {
+    const numbers = value.replace(/\D/g, "");
+
+    const limited = numbers.slice(0, 13);
+
+    if (limited.length <= 2) {
+      return `+${limited}`;
+    }
+
+    if (limited.length <= 4) {
+      return `+${limited.slice(0, 2)} ${limited.slice(2)}`;
+    }
+
+    if (limited.length <= 9) {
+      return `+${limited.slice(0, 2)} ${limited.slice(2, 4)} ${limited.slice(4)}`;
+    }
+
+    return `+${limited.slice(0, 2)} ${limited.slice(2, 4)} ${limited.slice(4, 9)}-${limited.slice(9)}`;
+  };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
 
+    const rawPhone = (data.get("owner_phone") as string) || "";
+
+    const formattedPhone =
+      "+" + rawPhone.replace(/\D/g, "");
+
     const payload = {
       pet_name: (data.get("pet_name") as string) || "",
       owner_name: (data.get("owner_name") as string) || "",
-      owner_phone: (data.get("owner_phone") as string) || "",
+      owner_phone: formattedPhone || "",
       breed: (data.get("breed") as string) || "",
       photo_url: (data.get("photo_url") as string) || "",
       notes: (data.get("notes") as string) || "",
@@ -88,6 +114,11 @@ export default function PetCreate() {
                 id="owner_phone"
                 name="owner_phone"
                 placeholder="+55 11 99999-9999"
+                value={phone}
+                onChange={(e) => {
+                  const formatted = formatPhone(e.target.value);
+                  setPhone(formatted);
+                }}
               />
             </div>
 

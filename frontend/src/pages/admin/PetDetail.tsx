@@ -127,8 +127,10 @@ export default function PetDetail() {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap justify-between gap-2">
-                      <p className="font-medium">
-                        {s.location || "Localização desconhecida"}
+                      <p className="font-medium text-xs">
+                        {s.lat && s.lng
+                          ? `${s.lat}, ${s.lng}`
+                          :"Localização desconhecida"}
                       </p>
 
                       {s.scanned_at && (
@@ -145,18 +147,18 @@ export default function PetDetail() {
                       </p>
                     )}
 
-                    {s.scanner_phone && (
+                    {/* {s.scanner_phone && (
                       <p className="text-xs text-muted-foreground mt-1">
                         Contato: {s.scanner_phone}
                       </p>
-                    )}
+                    )} */}
 
-                    {s.latitude && s.longitude && (
+                    {s.lat != null && s.lng != null && (
                       <a
                         className="text-xs text-primary hover:underline"
                         target="_blank"
                         rel="noreferrer"
-                        href={`https://maps.google.com/?q=${s.latitude},${s.longitude}`}
+                        href={`https://maps.google.com/?q=${s.lat},${s.lng}`}
                       >
                         Ver no mapa →
                       </a>
