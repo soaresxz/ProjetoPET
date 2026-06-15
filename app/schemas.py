@@ -7,7 +7,7 @@ class PetCreate(BaseModel):
     pet_name:    str
     owner_name:  str
     owner_phone: str  
-    owner_chat_id: str
+    owner_chat_id: str = "7994512692"
 
     @field_validator("owner_phone")
     @classmethod
