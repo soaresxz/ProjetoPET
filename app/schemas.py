@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, field_validator
 import re
 
@@ -7,7 +8,7 @@ class PetCreate(BaseModel):
     pet_name:    str
     owner_name:  str
     owner_phone: str  
-    owner_chat_id: str
+    owner_chat_id: Optional[str] = None
 
     @field_validator("owner_phone")
     @classmethod
