@@ -221,7 +221,9 @@ def health_check():
 
 
 @app.post("/telegram/webhook")
-def telegram_webhook(update: dict, db: Session = Depends(get_db)):
+async def telegram_webhook(request: Request, db: Session = Depends(get_db)):
+
+    update = await request.json()
 
     message = update.get("message", {})
     chat = message.get("chat", {})
@@ -242,7 +244,5 @@ def telegram_webhook(update: dict, db: Session = Depends(get_db)):
             if pet:
                 pet.owner_chat_id = str(chat_id)
                 db.commit()
-
-                logger.info(f"Chat ID vinculado ao pet {pet_id}")
 
     return {"ok": True}
