@@ -11,6 +11,7 @@ class Pet(Base):
     pet_id       = Column(String, unique=True, index=True, nullable=False)  # ex: "pet_01"
     pet_name     = Column(String, nullable=False)
     owner_name   = Column(String, nullable=False)
+    owner_chat_id = Column(String, nullable=True)
     owner_phone  = Column(String, nullable=False)  # formato E.164: +5579999999999
     created_at   = Column(DateTime(timezone=True), server_default=func.now())
 

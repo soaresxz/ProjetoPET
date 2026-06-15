@@ -15,6 +15,7 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
+from app.telegram_service import send_location_telegram
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
@@ -113,6 +114,17 @@ def receive_scan(pet_id: str, data: ScanIn, db: Session = Depends(get_db)):
     if not sms_ok:
         logger.warning(f"SMS não enviado para o dono do pet {pet_id}")
 
+    # Envia Telegram (NOVO)
+    telegram_ok = send_location_telegram(
+        chat_id=pet.owner_chat_id,  
+        pet_name=pet.pet_name,
+        lat=data.lat,
+        lng=data.lng,
+    )
+
+    if not telegram_ok:
+        logger.warning(f"Telegram não enviado para o pet {pet_id}")
+
     return scan
 
 
@@ -129,6 +141,7 @@ def create_pet(data: PetCreate, db: Session = Depends(get_db)):
         pet_name=data.pet_name,
         owner_name=data.owner_name,
         owner_phone=data.owner_phone,
+        owner_chat_id=data.owner_chat_id,
     )
 
     db.add(pet)
