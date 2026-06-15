@@ -221,19 +221,18 @@ def health_check():
 
 
 @app.post("/telegram/webhook")
-async def telegram_webhook(request: Request, db: Session = Depends(get_db)):
+def telegram_webhook(request: Request, db: Session = Depends(get_db)):
+    update = request.json()
 
-    update = await request.json()
-    print(update)
-
-    message = update.get("message")
-    if not message:
-        return {"ok": False}
-
-    chat_id = message["chat"]["id"]
+    message = update.get("message", {})
+    chat = message.get("chat", {})
     text = message.get("text", "")
+    chat_id = chat.get("id")
 
-    if text.startswith("/start"):
+    if not chat_id:
+        return {"ok": True}
+
+    if text and text.startswith("/start"):
         parts = text.split()
 
         if len(parts) > 1:
