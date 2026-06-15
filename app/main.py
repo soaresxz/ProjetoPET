@@ -218,3 +218,31 @@ def delete_pet(pet_id: str, db: Session = Depends(get_db)):
 @app.get("/", tags=["status"])
 def health_check():
     return {"status": "online", "service": "pet-qr-tracker"}
+
+
+@app.post("/telegram/webhook")
+def telegram_webhook(update: dict, db: Session = Depends(get_db)):
+
+    message = update.get("message", {})
+    chat = message.get("chat", {})
+    text = message.get("text", "")
+    chat_id = chat.get("id")
+
+    if not chat_id:
+        return {"ok": False}
+
+    if text and text.startswith("/start"):
+        parts = text.split()
+
+        if len(parts) > 1:
+            pet_id = parts[1]
+
+            pet = db.query(Pet).filter(Pet.pet_id == pet_id).first()
+
+            if pet:
+                pet.owner_chat_id = str(chat_id)
+                db.commit()
+
+                logger.info(f"Chat ID vinculado ao pet {pet_id}")
+
+    return {"ok": True}
